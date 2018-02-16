@@ -1,0 +1,21 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsDashboard": "",
+    "my-storage-connection": "UseDevelopmentStorage=true",
+    "my-servicebus-connection": "",
+    "cognitive-services-uri": "",
+    "cognitive-services-key": "",
+    "twilio-account-sid": "",
+    "twilio-account-auth-token": "",
+    "twilio-to-number": "",
+    "twilio-from-number": "",
+    "cognitive-services-approval-uri": "",
+    "cognitive-services-approval-key": "",
+    "input-container": "in-container",
+    "output-container": "out-container",
+    "done-queue": "done-images",
+    "base-url": "http://localhost:29222"
+  }
+}
