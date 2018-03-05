@@ -1,9 +1,6 @@
-using System.Net;
-using System.Net.Http;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
-using Microsoft.ServiceBus.Messaging;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Shared.Models;
@@ -14,10 +11,10 @@ namespace FunctionApp
     public static class Function1
     {
         [FunctionName("Function1")]
-        public static HttpResponseMessage Run(
+        [return: Queue("to-ascii-conversion")]
+        public static CloudQueueMessage Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")] ProcessingRequest request,
             [Blob("%input-container%/{FileId}")]                CloudBlockBlob outBlob,
-            [Queue("to-ascii")]                                 out CloudQueueMessage message,
             TraceWriter                                         log)
         {
             log.Info("(Fun1) Received image for processing...");
@@ -27,19 +24,16 @@ namespace FunctionApp
                 await outBlob.UploadFromByteArrayAsync(request.Content, 0, request.Content.Length);
             });
 
-            var analysisRequest = new AnalysisReq
+            // Description and tags are made up since we are not using image processing to figure this out in this lab
+            var asciiArtRequest = new AsciiArtRequest
             {
                 BlobRef = outBlob.Name,
                 Width = request.Width,
-                ImageUrl = request.ImageUrl
+                Description = "Made up description",
+                Tags = new string[] { "tag1 tag 2" }
             };
-
-            message = analysisRequest.AsQueueItem();
-
-            return new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new StringContent(outBlob.Name)
-            };
+            
+            return asciiArtRequest.AsQueueItem();
         }
     }
 }
